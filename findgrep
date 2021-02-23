@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -lt 3 ]; then
+	echo "Usage: $0 <dir> <fileselectors> ... <string>"
+	exit
+fi
+if [ ! -d $1 ]; then
+	echo "$1 is not a valid directory"
+	exit
+fi
+dir=$1
+shift
+selector=$1
+shift
+while [ $# -gt 1 ];
+do
+	selector+="\|$1"
+	shift
+done
+# selector is a '|' separated list; all '|' need to be excaped with '\'
+# e.g.: c\|h\|SH
+find $dir -iregex ".*\.\($selector\)" -exec grep -Hn "$1" {} \;
+exit
